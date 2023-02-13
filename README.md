@@ -20,3 +20,5 @@ or in general when you want the database or composer to be reset:
 ```bash
 # this does `composer install` + importing excel file to Elasticsearch
 bin/reset
+
+See the frontend on https://0.0.0.0/server/list
