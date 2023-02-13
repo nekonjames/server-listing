@@ -1,0 +1,75 @@
+version: '3.7'
+services:
+  apache2:
+    image: webdevops/apache:latest
+    environment:
+      WEB_PHP_SOCKET: php:9000
+      WEB_DOCUMENT_ROOT: /var/www/app/public
+    volumes:
+      - .:/var/www/app:cached
+    ports:
+      - 80:80
+      - 443:443
+    networks:
+      - apache
+
+  php:
+    build:
+      context: ./docker/php
+      args:
+        - PUID=1000
+        - LIVE=
+    expose:
+      - '9000'
+      - '9001'
+    volumes:
+      - .:/var/www/app:cached
+    env_file:
+      - docker-compose.env
+    extra_hosts:
+      - 'docker.host:127.0.0.1'
+    networks:
+      - application
+      - apache
+
+  db:
+    image: postgres:12
+    expose:
+      - '5432'
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_USER: postgres
+    networks:
+      - application
+
+  encore:
+    image: node:16
+    volumes:
+      - .:/app:cached
+    ports:
+      - "8080:8080"
+    working_dir: /app
+    command: bash -c "yarn && yarn watch"
+    networks:
+      - application
+
+  es:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.6.0
+    environment:
+      - "discovery.type=single-node"
+      - "bootstrap.memory_lock=true"
+      - "ES_JAVA_OPTS=-Xms1G -Xmx1G"
+      - "xpack.security.enabled=false"
+      - "http.cors.enabled=true"
+    ports:
+      - 9201:9200
+    networks:
+      - application
+
+networks:
+  apache: {}
+  application:
+    driver: bridge
+

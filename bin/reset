@@ -1,0 +1,33 @@
+# bin/reset
+#!/usr/bin/env bash
+
+SYMFONY_ENV="${1#*=}"
+
+# (re)set pre-commit hook
+rm .git/hooks/pre-commit
+ln -s ../../bin/pre-commit .git/hooks/pre-commit
+
+# Enable TTY, so fastest runs on a single line and looks cooler
+exec < /dev/tty
+
+# fix code styling ONLY for modified/added files
+docker-compose exec -T php composer install --no-scripts
+
+if [[ $? != "0" ]]
+then
+   echo -e "\e[41m RESET FAILED: Composer install failed!! \e[0m";
+   exit 1
+fi
+
+echo "Importing Excel with server list to ES"
+docker-compose exec php bin/console app:server-list-elastic
+
+docker-compose exec -T frontend npm install
+if [[ $? != "0" ]]
+then
+    echo -e "\e[41m RESET FAILED: Npm install from package-lock.json failed!! \e[0m";
+    exit 1
+fi
+
+echo "Done"
+echo ""

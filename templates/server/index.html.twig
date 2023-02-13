@@ -1,0 +1,55 @@
+<html>
+<head>
+    <style>
+        .container {
+            width: 100%;
+            background-color: #FFFFFF;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="row justify-content-md-center">
+        <div class="col-sm-6 col-sm-offset-3 mt-5">
+            {{ form_start(form) }}
+            <div class="form-errors">{{ form_errors(form) }}</div>
+            {{ form_widget(form) }}
+            {{ form_end(form) }}
+        </div>
+        <div class="table-wrapper">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Model</th>
+                    <th>RAM</th>
+                    <th>HDD</th>
+                    <th>Location</th>
+                    <th>Price</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for serverList in data %}
+                    <tr>
+                        <td>{{ serverList['_source']['model'] }}</td>
+                        <td>{{ serverList['_source']['ram'] }}</td>
+                        <td>{{ serverList['_source']['hdd'] }}</td>
+                        <td>{{ serverList['_source']['location'] }}</td>
+                        <td>{{ serverList['_source']['price'] }}</td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="11">no records found</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <div class="pagination-wrapper">
+                {{ knp_pagination_render(data) }}
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
