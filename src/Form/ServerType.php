@@ -37,7 +37,6 @@ class ServerType extends AbstractType
                     'class' => 'tinymce'
                 ],
             ])
-            ->add('ram', CheckboxType::class)
             ->add('ram', ChoiceType::class, [
                 'choices' => $ram,
                 'multiple' => true,
@@ -61,7 +60,7 @@ class ServerType extends AbstractType
                     'Washington D.C' => 'Washington D.C',
                 ],
             ])
-            ->add('submit', SubmitType::class)
+            ->add('filter', SubmitType::class)
         ;
     }
 

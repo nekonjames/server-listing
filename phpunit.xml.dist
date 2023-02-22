@@ -35,7 +35,7 @@
         </include>
         <exclude>
             <file>src/Kernel.php</file>
-            <file>src/Command/ResetAllCommand.php</file>
+            <directory>src/Command</directory>
             <directory>src/Migrations</directory>
             <directory>src/DataFixtures</directory>
         </exclude>
